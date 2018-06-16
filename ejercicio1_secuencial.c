@@ -38,12 +38,9 @@ int main(int argc,char*argv[]){
            D[i*N+j]=1.0;
            if(i==j){
                L[i*N+j]= 1.0;
-               //U[i*N+j]= 1.0;
            } else if(i>j){
-               //U[i*N+j]= 1.0;
                L[i*N+j]= 0.0;
            } else {
-               //U[i*N+j]= 0.0;
                L[i*N+j]= 1.0;
            }
        }
@@ -56,7 +53,6 @@ int main(int argc,char*argv[]){
     for(i=0;i<N;i++){   //Calcula los promedios
        for(j=0;j<N;j++){
            promedioL+= L[i*N+j];
-           //promedioU+= U[i*N+j];
        }
     }
     for(i=0; i<elementosU; i++) promedioU+= U[i];
@@ -97,25 +93,19 @@ int main(int argc,char*argv[]){
     }
     printf("Tiempo en segundos %f \n", dwalltime() - timetick);
 
-    /* double resultado = TOTAL[0];
+    double resultado;
     for(i=0;i<N;i++){
-        for(j=0;j<N;j++){
-        check = check && (TOTAL[i*N+j]==resultado);
-        }
-    } */
-	double resultado;
-	for(i=0;i<N;i++){
-		resultado = TOTAL[i*N]/promedioL;
-        for(j=0;j<N;j++){
-        check = check && (TOTAL[i*N+j]/promedioL==resultado+j);
-        }
-	}
+    	resultado = TOTAL[i*N]/promedioL;
 	for(j=0;j<N;j++){
-		resultado = TOTAL[j*N]/promedioL;
-		for(i=0;i<N;i++){
-		    check = check && (((TOTAL[i+j*N]/promedioL)-resultado-i)==0);
-        }
+		check = check && (TOTAL[i*N+j]/promedioL==resultado+j);
 	}
+    }
+    for(j=0;j<N;j++){
+	resultado = TOTAL[j*N]/promedioL;
+	for(i=0;i<N;i++){
+	    check = check && (((TOTAL[i+j*N]/promedioL)-resultado-i)==0);
+	}
+    }
     if(check){
         printf("Multiplicacion de matriz correcta\n");
     }else{
