@@ -12,17 +12,6 @@ double dwalltime(){
   return sec;
 }
 
-/*
-Consultas:
-Como hacer el promedio de U? que cada proceso lo calcule recorriendo todo? o que lo haga el root y broadcastee el resultado
-que onda el check!? los valores que dan no son todos iguales (chequeado con wolfram), con matrices de 4x4 da
-9.000000 10.000000 11.000000 12.000000
-8.000000 9.000000 10.000000 11.000000
-7.000000 8.000000 9.000000 10.000000
-6.000000 7.000000 8.000000 9.000000
-*/
-
-
 void root(int N, int cantProcesos); //funcion para el proceso 0
 void workers(int ID, int N, int cantProcesos); //funcion para los otros procesos
 
@@ -49,7 +38,7 @@ void root(int N, int cantProcesos){
     int i,j,k;
     int filas = N/cantProcesos; //filas por proceso
     int elementosU = (N*N)-((N*(N-1))/2);
-	int elementosUporProceso = elementosU/cantProcesos;
+    int elementosUporProceso = elementosU/cantProcesos;
     A=(double*)malloc(sizeof(double)*N*N);
     B=(double*)malloc(sizeof(double)*N*N);
     C=(double*)malloc(sizeof(double)*N*N);
@@ -72,12 +61,9 @@ void root(int N, int cantProcesos){
            D[i*N+j]=1.0;
            if(i==j){
                L[i*N+j]= 1.0;
-               //U[i*N+j]= 1.0;
            } else if(i>j){
-               //U[i*N+j]= 1.0;
                L[i*N+j]= 0.0;
            } else {
-               //U[i*N+j]= 0.0;
                L[i*N+j]= 1.0;
            }
        }
@@ -155,15 +141,15 @@ void root(int N, int cantProcesos){
 	double resultado;
 	for(i=0;i<N;i++){
 		resultado = TOTAL[i*N]/promedioL;
-        for(j=0;j<N;j++){
-        	check = check && (TOTAL[i*N+j]/promedioL==resultado+j);
-        }
+        	for(j=0;j<N;j++){
+        		check = check && (TOTAL[i*N+j]/promedioL==resultado+j);
+        	}
 	}
-    for(j=0;j<N;j++){
+   	for(j=0;j<N;j++){
 		resultado = TOTAL[j*N]/promedioL;
 		for(i=0;i<N;i++){
-		    check = check && (((TOTAL[i+j*N]/promedioL)-resultado-i)==0);
-        }
+			check = check && (((TOTAL[i+j*N]/promedioL)-resultado-i)==0);
+        	}
 	}
     if(check){
         printf("Multiplicacion de matriz correcta\n");
@@ -192,7 +178,7 @@ void workers(int ID, int N, int cantProcesos){
     int i,j,k;
     int filas = N/cantProcesos; //filas por proceso
     int elementosU = (N*N)-((N*(N-1))/2);
-	int elementosUporProceso = elementosU/cantProcesos;
+    int elementosUporProceso = elementosU/cantProcesos;
     B=(double*)malloc(sizeof(double)*N*N);
     C=(double*)malloc(sizeof(double)*N*N);
     U=(double*)malloc(sizeof(double)*elementosU);
@@ -219,7 +205,6 @@ void workers(int ID, int N, int cantProcesos){
     for(i=0;i<filas;i++){   //Calcula los promedios
        for(j=0;j<N;j++){
            promedioL+= l[i*N+j];
-           //promedioU+= U[i*N+j];
        }
     }
 	if (ID == cantProcesos-1) for(i=ID*elementosUporProceso;i<elementosU;i++) promedioU += U[i];
